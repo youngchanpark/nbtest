@@ -1,11 +1,13 @@
+import io
+import re
 from setuptools import setup, find_packages
 
 
-with io.open("nbtest/__init__.py", "rt", encoding="utf8") as f:
+with io.open("testmynb/__init__.py", "rt", encoding="utf8") as f:
     version = re.search(r'__version__ = "(.*?)"', f.read()).group(1)
 
 setup(
-    name = "nbtest",
+    name = "testmynb",
     version = version,
     install_requires = [],
     include_package_data = False,
@@ -18,5 +20,5 @@ setup(
     classifiers = [
         "Programming Language :: Python :: 3"
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.5',
 )
