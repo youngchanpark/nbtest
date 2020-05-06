@@ -21,5 +21,10 @@ setup(
     classifiers = [
         "Programming Language :: Python :: 3"
     ],
+    entry_points = {
+        'console_scripts': [
+            'testmynb = testmynb.main:cli',
+        ],
+    },
     python_requires='>=3.5',
 )
