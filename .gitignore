@@ -1,3 +1,7 @@
 .ipynb_checkpoints/
 test/.ipynb_checkpoints/
 testmynb/__pycache__/
+src/testmynb/__pycache__/
+test/.hypothesis/
+test/__pycache__/
+.pytest_cache/
