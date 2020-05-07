@@ -22,7 +22,7 @@ class CodeCell(UserString):
         The user defined name of the test cell block.
     """    
 
-    def __init__(self, data, notebook = None):
+    def __init__(self, data, notebook):
         super().__init__(data['source'])
         magic_args = self.parse_cell_magic(self)
         if '-n' in magic_args:
@@ -39,6 +39,8 @@ class CodeCell(UserString):
         self.data = re.sub(r'\%\%testcell.*\n', '', self.data, count = 1)
         
         self.notebook = notebook
+        
+        self.result = None
     
     @staticmethod
     def parse_cell_magic(source: str) -> List[str]:
@@ -52,7 +54,51 @@ class CodeCell(UserString):
     
     def __repr__(self):
         return self.name
+    
+    def __call__(self, env = None):
         
+        try:
+            exec(str(self), env)
+            status = '.'
+            err = ''
+        except AssertionError:
+            status = 'F'
+            err = self._modify_err(traceback.format_exc())
+            # This traceback function only works within the exception block.
+        except:
+            status = 'E'
+            err = self._modify_err(traceback.format_exc())
+        
+        self.result = status, err
+        
+        return status, err
+        
+    def _modify_err(self, err):
+        split_err = err.split('\n')
+        exec_run_string = split_err[3]
+        
+        mod_exec_run_string = exec_run_string\
+                                .replace('"<string>"', f'"{self.notebook.ipynb}"')\
+                                .replace('<module>', self.name)
+        split_err[3] = mod_exec_run_string
+        
+        error_line_num = self._extract_test_cell_error_line(exec_run_string)
+        error_line = self.data.split('\n')[error_line_num-1]
+        split_err.insert(4, '    ' + error_line)
+        del split_err[1]
+        del split_err[1]
+        return '\n'.join(split_err)
+    
+    @staticmethod
+    def _extract_test_cell_error_line(string: str) -> int:
+        """
+        >>> CodeCell._extract_test_cell_error_line('  File "<string>", line 2, in <module>')
+        2
+        """
+        matched = re.search(r'(?!line )[0-9]+(?=, )', string)
+        start, end = matched.span()
+        return int(string[start:end])
+
 
 class Notebook(NotebookNode):
     """
@@ -132,7 +178,7 @@ class Notebook(NotebookNode):
         stack = dict()
         for cell in self.tests:
 
-            status, err = self.run_test(cell, self.env)
+            status, err = cell()
             result.append(status)
             if status!='.':
                 stack[cell] = {'status': status, 'traceback': err}
@@ -154,29 +200,3 @@ class Notebook(NotebookNode):
                 fail_stack[cell] = err['traceback']
         return fail_stack
     
-    @staticmethod
-    def run_test(codecell: CodeCell, env: dict) -> Tuple[str, str]:
-        """
-
-        Returns
-        -------
-        str : '.', 'F', 'E'
-            '.' == Passed
-            'F' == Failed
-            'E' == Error
-        str
-            Traceback message. Empty string if the test passed. 
-        """
-        try:
-            exec(str(codecell), env)
-            status = '.'
-        except AssertionError:
-            status = 'F'
-            err = traceback.format_exc()
-            # This traceback function only works within the exception block.
-        except:
-            status = 'E'
-            err = traceback.format_exc()
-        else:
-            return status, ''
-        return status, err

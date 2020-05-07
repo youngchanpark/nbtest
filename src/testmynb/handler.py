@@ -70,7 +70,7 @@ class TestHandler:
             head_message = red(self._h1_message('Failed Test(s)'))
             print(head_message)
             for cell, err in fails.items():
-                print(f'---- {cell.notebook}: {cell.name} ----\n')
+                print(f'---- {cell.notebook}: {cell.name} ----')
                 print(cell)
                 print(red('-----------------------------------------'))
                 print(err)
@@ -81,7 +81,7 @@ class TestHandler:
             head_message = orange(self._h1_message('Errored Test(s)'))
             print(head_message)
             for cell, err in errors.items():
-                print(f'---- {cell.notebook}: {cell.name} ----\n')
+                print(f'---- {cell.notebook}: {cell.name} ----')
                 print(cell)
                 print(red('-----------------------------------------'))
                 print(err)
