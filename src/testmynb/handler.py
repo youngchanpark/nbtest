@@ -37,7 +37,10 @@ class TestHandler:
 
     @staticmethod
     def _h1_message(message):
-        col, _ = os.get_terminal_size()
+        try:
+            col, _ = os.get_terminal_size(0)
+        except OSError:
+            col, _ = os.get_terminal_size(1)
         num_equals = (col - len(message) - 3) // 2
         equals_sign = num_equals * '='
         
@@ -55,39 +58,49 @@ class TestHandler:
 
 
     def __call__(self):
-        
+        failed_or_error = False
+        output_message = list()
+
         for nb in self.notebooks:
             nb()
         
-        print(self._summary)
-        print(self._notebook_summary_section)
+        output_message.append(self._summary)
+        output_message.append(self._notebook_summary_section)
 
 
         errors = self.collect_errors()
         fails = self.collect_fails()
 
         if fails:
+            failed_or_error = True
             head_message = red(self._h1_message('Failed Test(s)'))
-            print(head_message)
+            output_message.append(head_message)
             for cell, err in fails.items():
-                print(f'---- {cell.notebook}: {cell.name} ----')
-                print(cell)
-                print(red('-----------------------------------------'))
-                print(err)
-                print('\n\n')
+                output_message.append(f'---- {cell.notebook}: {cell.name} ----\n')
+                output_message.append(str(cell))
+                output_message.append(red('\n-----------------------------------------\n'))
+                output_message.append(err)
+                output_message.append('\n\n')
 
 
         if errors:
+            failed_or_error = True
             head_message = orange(self._h1_message('Errored Test(s)'))
-            print(head_message)
+            output_message.append(head_message)
             for cell, err in errors.items():
-                print(f'---- {cell.notebook}: {cell.name} ----')
-                print(cell)
-                print(red('-----------------------------------------'))
-                print(err)
-                print('\n\n')
+                output_message.append(f'---- {cell.notebook}: {cell.name} ----\n')
+                output_message.append(str(cell))
+                output_message.append(red('\n-----------------------------------------\n'))
+                output_message.append(err)
+                output_message.append('\n\n')
 
-        print(self._final_remarks)
+        output_message.append(self._final_remarks)
+
+        output_message = ''.join(output_message)
+        if failed_or_error:
+            print(output_message, file = sys.stderr)
+        else:
+            print(output_message, file = sys.stdout)
                 
 
 
