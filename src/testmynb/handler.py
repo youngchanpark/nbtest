@@ -41,7 +41,10 @@ class TestHandler:
             col, _ = os.get_terminal_size(0)
         except OSError:
             col, _ = os.get_terminal_size(1)
-        num_equals = (col - len(message) - 3) // 2
+
+        no_formats = re.sub(r'\x1b\[(\d|;)+m', '', message)
+        # Remove the ANSI escape codes to check the message length
+        num_equals = (col - len(no_formats) - 3) // 2
         equals_sign = num_equals * '='
         
         return f'{equals_sign} {message} {equals_sign}\n'
@@ -113,7 +116,6 @@ class TestHandler:
         failed_test_count = all_tests.count('F')
         errored_test_count = all_tests.count('E')
         
-        f'{green(f"{passed_test_count} test(s) passed")}, {red(f"{failed_test_count} failed")},{orange(f" and {errored_test_count} raised an error")}'
 
         return self._h1_message(f'{green(f"{passed_test_count} test(s) passed")}, {red(f"{failed_test_count} failed")},{orange(f" and {errored_test_count} raised an error")}')
     
