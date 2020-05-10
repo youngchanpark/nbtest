@@ -5,24 +5,24 @@ from IPython.core.getipython import get_ipython
 
 
 
-def remove_strings(text: str) -> str:
+def _remove_strings(text: str) -> str:
     """Removes strings
     
     Example
     -------
-    >>> remove_strings('print("hello")')
+    >>> _remove_strings('print("hello")')
     'print()'
     """
     return re.sub(r'(\'.*\')|(\".*\")', '', text)
 
-def split_statements(text: str) -> List[str]:
+def _split_statements(text: str) -> List[str]:
     """Splits a string on `\n` and `;`.
     
     Examples
     --------
-    >>> split_statements('print()\\nassert True')
+    >>> _split_statements('print()\\nassert True')
     ['print()', 'assert True']
-    >>> split_statements('print() ; assert True')
+    >>> _split_statements('print() ; assert True')
     ['print()', 'assert True']
     """
     # If you see closely in the first example in the docstring,
@@ -32,13 +32,13 @@ def split_statements(text: str) -> List[str]:
     split_text = re.split(r'\n|;', text) 
     return [line.strip() for line in split_text if line]
 
-def assert_exists(split_text: List[str]) -> bool:
+def _assert_exists(split_text: List[str]) -> bool:
     """Checks whether an `assert` statement exists in the given `split_text` 
     Examples
     --------
-    >>> assert_exists(['print()', 'assert True'])
+    >>> _assert_exists(['print()', 'assert True'])
     True
-    >>> assert_exists(['print()'])
+    >>> _assert_exists(['print()'])
     False
     """
     assert_found = False
@@ -48,16 +48,16 @@ def assert_exists(split_text: List[str]) -> bool:
             break
     return assert_found
 
-def search_assert(cell: str) -> bool:
+def _search_assert(cell: str) -> bool:
     """
-    >>> search_assert('print();assert True')
+    >>> _search_assert('print();assert True')
     True
-    >>> search_assert('print()')
+    >>> _search_assert('print()')
     False
     """
-    stringless_cell: str = remove_strings(cell)
-    split_text: List[str] = split_statements(stringless_cell)    
-    assert_found: bool = assert_exists(split_text)
+    stringless_cell: str = _remove_strings(cell)
+    split_text: List[str] = _split_statements(stringless_cell)    
+    assert_found: bool = _assert_exists(split_text)
 
     return assert_found
 
@@ -65,7 +65,7 @@ def search_assert(cell: str) -> bool:
 def testcell(line, cell):
     interactive_shell = get_ipython()
 
-    if ('-n' not in line) and (not search_assert(cell)):
+    if ('-n' not in line) and (not _search_assert(cell)):
         interactive_shell.run_code('print("[testmynb] Assert statement missing.")')
     interactive_shell.run_cell(cell)
 
@@ -73,8 +73,3 @@ def testcell(line, cell):
 
 def load_ipython_extension(ipython):
     ipython.register_magic_function(testcell, 'cell')
-
-
-
-def intentional_error_func():
-    undefiend_variable.undefined_method('this will error')
