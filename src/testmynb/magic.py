@@ -61,12 +61,32 @@ def _search_assert(cell: str) -> bool:
 
     return assert_found
 
+def _split_line(line: str) -> List[str]:
+    """
+    >>> _split_line('%%testcell test_cell1 # hello')
+    ['test_cell1']
+    >>> _split_line('%%testcell -n # test_cell1')
+    []
+    """
+    positional_args = [arg for arg in re.split(r' +', line)
+            if not re.match(r'^(%|-)', arg)
+            and arg]
+    if '#' in positional_args:
+        del positional_args[positional_args.index('#'):]
+
+    return positional_args
 
 def testcell(line, cell):
+    positional_args = _split_line(line)
+
     interactive_shell = get_ipython()
 
     if ('-n' not in line) and (not _search_assert(cell)):
         interactive_shell.run_code('print("[testmynb] Assert statement missing.")')
+
+    if not positional_args:
+        interactive_shell.run_code('print("[testmynb] Cell title missing.")')
+
     interactive_shell.run_cell(cell)
 
 
