@@ -2,7 +2,7 @@ import os
 import re
 import traceback
 from collections import UserString
-from typing import List, Tuple, TextIO
+from typing import List, TextIO
 
 import nbformat
 from nbformat.sign import NotebookNotary
@@ -10,7 +10,7 @@ from nbformat.notebooknode import NotebookNode, from_dict
 
 notebook_notary = NotebookNotary() 
 
-class CodeCell(UserString):
+class TestCell(UserString):
     """
     A class for Jupyter Notebook code cell.
     
@@ -55,10 +55,10 @@ class CodeCell(UserString):
     def __repr__(self):
         return self.name
     
-    def __call__(self, env = None):
+    def __call__(self):
         
         try:
-            exec(str(self), env)
+            exec(str(self), self.notebook.env)
             status = '.'
             err = ''
         except AssertionError:
@@ -92,7 +92,7 @@ class CodeCell(UserString):
     @staticmethod
     def _extract_test_cell_error_line(string: str) -> int:
         """
-        >>> CodeCell._extract_test_cell_error_line('  File "<string>", line 2, in <module>')
+        >>> TestCell._extract_test_cell_error_line('  File "<string>", line 2, in <module>')
         2
         """
         matched = re.search(r'(?!line )[0-9]+(?=, )', string)
@@ -153,13 +153,13 @@ class Notebook(NotebookNode):
     def trusted(self):
         return notebook_notary.check_signature(self)
     
-    def extract_codes(self) -> List[CodeCell]:
-        code_list = list()
+    def extract_codes(self) -> List[TestCell]:
+        test_list = list()
         for cell in self.cells:
             if cell.cell_type=='code' \
                 and re.match(r'^%%testcell', cell.source):
-                code_list.append(CodeCell(cell, self))
-        return code_list
+                test_list.append(TestCell(cell, self))
+        return test_list
     
     
     def __hash__(self):
