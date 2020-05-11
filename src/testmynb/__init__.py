@@ -14,4 +14,4 @@ __author__ = "Young-Chan Park <young.chan.park93@gmail.com>"
 
 from .magic import load_ipython_extension
 from .handler import TestHandler
-from .notebook import Notebook, CodeCell
+from .notebook import Notebook, TestCell
