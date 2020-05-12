@@ -5,3 +5,5 @@ src/testmynb/__pycache__/
 test/.hypothesis/
 test/__pycache__/
 .pytest_cache/
+.tox/
+src/testmynb.egg-info/
