@@ -1,9 +1,9 @@
 --index-url https://pypi.python.org
 
 nbformat==5.0.6
-ipython==7.14.0
+ipython==7.9.0
 click==7.0
-pandas==0.25.0
+pandas==0.24.2
 pytest==5.4.2
-matplotlib==3.2.1
+matplotlib==3.0.3
 hypothesis==5.14.0
