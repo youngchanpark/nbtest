@@ -32,9 +32,12 @@ class TestHandler:
     @staticmethod
     def _h1_message(message):
         try:
-            col, _ = os.get_terminal_size(0)
+            col = os.get_terminal_size(0).columns
         except OSError:
-            col, _ = os.get_terminal_size(1)
+            try:
+                col = os.get_terminal_size(1).columns
+            except OSError:
+                col = os.get_terminal_size(2).columns
 
         no_formats = strip_ansi(message)
         # Remove the ANSI escape codes to check the message length
