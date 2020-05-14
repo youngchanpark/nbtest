@@ -3,16 +3,7 @@ import re
 import sys
 
 from . import __version__ as testmynb__version__
-
-
-def green(text):
-    return f"\033[38;5;82m{text}\033[0m"
-
-def red(text):
-    return f"\033[38;5;197m{text}\033[0m"
-
-def orange(text):
-    return f"\033[38;5;214m{text}\033[0m"
+from ._ansi import green, red, orange, strip_ansi
 
 class TestHandler:
     def __init__(self, *notebooks):
@@ -42,7 +33,7 @@ class TestHandler:
         except OSError:
             col, _ = os.get_terminal_size(1)
 
-        no_formats = re.sub(r'\x1b\[(\d|;)+m', '', message)
+        no_formats = strip_ansi(message)
         # Remove the ANSI escape codes to check the message length
         num_equals = (col - len(no_formats) - 3) // 2
         equals_sign = num_equals * '='
@@ -100,12 +91,9 @@ class TestHandler:
         output_message.append(self._final_remarks)
 
         output_message = ''.join(output_message)
+        print(output_message)
         if failed_or_error:
-            print(output_message, file = sys.stderr)
-        else:
-            print(output_message, file = sys.stdout)
-                
-
+            sys.exit(1)
 
 
     @property
