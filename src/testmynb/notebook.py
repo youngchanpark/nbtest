@@ -111,7 +111,7 @@ class Notebook(NotebookNode):
     
     Attributes
     ----------
-    ipynb : TestIO
+    ipynb : TextIO
         Absolute path to the `.ipynb` file that was given to instantiate the instance.
     
     name : str
