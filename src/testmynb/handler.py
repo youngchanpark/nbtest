@@ -31,13 +31,8 @@ class TestHandler:
 
     @staticmethod
     def _h1_message(message):
-        try:
-            col = os.get_terminal_size(0).columns
-        except OSError:
-            try:
-                col = os.get_terminal_size(1).columns
-            except OSError:
-                col = os.get_terminal_size(2).columns
+
+        col = int(os.popen('stty size', 'r').read().split()[1])
 
         no_formats = strip_ansi(message)
         # Remove the ANSI escape codes to check the message length
