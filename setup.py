@@ -9,7 +9,7 @@ with io.open("src/testmynb/__init__.py", "rt", encoding="utf8") as f:
 setup(
     name="testmynb",
     version=version,
-    install_requires=["nbformat>=5.0.0", "ipython", "click"],
+    install_requires=["nbformat>=5.0.0", "ipython", "click", "pytest"],
     include_package_data=False,
     # Metadata
     author="Young-Chan Park",

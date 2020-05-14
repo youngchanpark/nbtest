@@ -2,6 +2,8 @@ import os
 import re
 import sys
 
+from py._io.terminalwriter import get_terminal_width
+
 from . import __version__ as testmynb__version__
 from ._ansi import green, red, orange, strip_ansi
 
@@ -31,7 +33,7 @@ class TestHandler:
 
     @staticmethod
     def _h1_message(message):
-        col = _get_terminal_width()
+        col = get_terminal_width()
         no_formats = strip_ansi(message)
         # Remove the ANSI escape codes to check the message length
         num_equals = (col - len(no_formats) - 3) // 2
@@ -150,14 +152,3 @@ def _recursive_find_notebooks(path):
                 notebooks.append(os.path.join(root, file))
 
     return notebooks
-
-
-def _get_terminal_width():
-    import termios, fcntl, struct
-    call = fcntl.ioctl(1, termios.TIOCGWINSZ, "\000" * 8)
-    width = struct.unpack("hhhh", call)[1]
-
-    if width < 40:
-        width = 80
-
-    return width
