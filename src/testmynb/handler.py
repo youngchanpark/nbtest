@@ -31,9 +31,7 @@ class TestHandler:
 
     @staticmethod
     def _h1_message(message):
-
-        col = int(os.popen('stty size', 'r').read().split()[1])
-
+        col = _get_terminal_width()
         no_formats = strip_ansi(message)
         # Remove the ANSI escape codes to check the message length
         num_equals = (col - len(no_formats) - 3) // 2
@@ -152,3 +150,14 @@ def _recursive_find_notebooks(path):
                 notebooks.append(os.path.join(root, file))
 
     return notebooks
+
+
+def _get_terminal_width():
+    import termios, fcntl, struct
+    call = fcntl.ioctl(1, termios.TIOCGWINSZ, "\000" * 8)
+    width = struct.unpack("hhhh", call)[1]
+
+    if width < 40:
+        width = 80
+
+    return width
