@@ -1,3 +1,5 @@
+--index-url https://pypi.python.org
+
 nbformat==5.0.6
 ipython==7.14.0
 click==7.0

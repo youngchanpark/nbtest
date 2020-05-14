@@ -7,3 +7,4 @@ test/__pycache__/
 .pytest_cache/
 .tox/
 src/testmynb.egg-info/
+__pycache__/
