@@ -14,17 +14,15 @@ setup(
     install_requires=["nbformat>=5.0.0", "ipython", "click", "pytest"],
     include_package_data=False,
     entry_points={"console_scripts": ["testmynb = testmynb.main:cli",],},
-    
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    
     # Metadata
     author="Young-Chan Park",
     author_email="young.chan.park93@gmail.com",
     description="A Jupyter Notebook Testing Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    license='MIT',
+    license="MIT",
     classifiers=[
         "Intended Audience :: Developers",
         "Operating System :: Unix",
@@ -38,8 +36,7 @@ setup(
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: MIT License",
     ],
-    project_urls={
-        'Issue Tracker': 'https://github.com/youngchanpark/testmynb/issues',
-    },
+    url="https://github.com/youngchanpark/testmynb",
+    project_urls={"Issue Tracker": "https://github.com/youngchanpark/testmynb/issues",},
     python_requires=">=3.5.3",
 )
