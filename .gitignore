@@ -6,6 +6,10 @@ src/testmynb.egg-info/
 *.py[cod]
 __pycache__
 
+# Distribution
+build/
+dist/
+
 
 # Unit test / coverage reports
 .coverage
