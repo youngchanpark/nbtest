@@ -9,7 +9,7 @@ __pycache__
 # Distribution
 build/
 dist/
-
+doc/build/
 
 # Unit test / coverage reports
 .coverage
