@@ -30,7 +30,7 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.napoleon']
+extensions = ['sphinx.ext.napoleon', 'nbsphinx']
 
 # Napoleon settings
 napoleon_google_docstring = False
@@ -45,6 +45,11 @@ napoleon_use_ivar = True
 napoleon_use_param = True
 napoleon_use_rtype = False
 
+# nbsphinx Settings
+highlight_language = 'python3'
+nbsphinx_input_prompt = 'In [%s]:'
+nbsphinx_output_prompt = 'Out[%s]:'
+nbsphinx_codecell_lexer = 'python3'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
