@@ -27,4 +27,4 @@ python:
 
 
 build:
-  image: 3.7
+  image: latest
